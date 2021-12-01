@@ -49,46 +49,56 @@ void setup(){
   pinMode(TRGI, INPUT);
   pinMode(LED, OUTPUT);
 
+  digitalWrite(LED, 1);
+  iniciarNRF();
+}
+
+void loop(){
+  datos.ch1=map(analogRead(BTNIX), 0, 1023, 0, 254);
+  datos.ch2=map(analogRead(BTNIY), 0, 1023, 0, 254);
+  datos.ch3=map(analogRead(BTNDX), 0, 1023, 0, 254);
+  datos.ch4=map(analogRead(BTNDY), 0, 1023, 0, 254);
+  datos.ch5=digitalRead(TRGI);
+  datos.ch6=digitalRead(TRGD);
+
+  //verDatosRaw();
+
+  if(radio.write(&datos, sizeof(datosEnviados))){
+    digitalWrite(LED, 0);
+  }else{
+    digitalWrite(LED, 1);
+  }
+}
+
+void iniciarNRF(){
   radio.begin();
   radio.setAutoAck(false);
   radio.setPALevel(RF24_PA_MAX);
   radio.setDataRate(RF24_250KBPS);
   radio.openWritingPipe(addr);
   radio.stopListening();
+  reiniciarDatos();
+}
 
+void reiniciarDatos(){
   datos.ch1=127;
   datos.ch2=127;
   datos.ch3=127;
   datos.ch4=127;
   datos.ch5=1;
   datos.ch6=1;
-  
 }
 
-void loop(){
-  //XIzq=map(analogRead(BTNIX), 0, 1023, 0, 255);
-  /*
-  YIzq=map(analogRead(BTNIY), 0, 1023, 0, 255);
-  XDer=map(analogRead(BTNDX), 0, 1023, 0, 255);
-  YDer=map(analogRead(BTNDY), 0, 1023, 0, 255);
-  BIzq=digitalRead(TRGI);
-  BDer=digitalRead(TRGD);
-  BJIzq=digitalRead(BTNI);
-  BJDer=digitalRead(BTND);
-  */
-
-  //radio.write(&XIzq, sizeof(XIzq));
-  
-  datos.ch1=map(analogRead(BTNIX), 0, 1023, 0, 255);
-  datos.ch2=map(analogRead(BTNIY), 0, 1023, 0, 255);
-  datos.ch3=map(analogRead(BTNDX), 0, 1023, 0, 255);
-  datos.ch4=map(analogRead(BTNDY), 0, 1023, 0, 255);
-  datos.ch5=digitalRead(TRGI);
-  datos.ch6=digitalRead(TRGD);
-
-  if(radio.write(&datos, sizeof(datosEnviados))){
-    digitalWrite(LED, 1);
-  }else{
-    digitalWrite(LED, 0);
-  }
+void verDatosRaw(){
+  Serial.print(datos.ch1);
+  Serial.print(F(" || "));
+  Serial.print(datos.ch2);
+  Serial.print(F(" || "));
+  Serial.print(datos.ch3);
+  Serial.print(F(" || "));
+  Serial.print(datos.ch4);
+  Serial.print(F(" || "));
+  Serial.print(datos.ch5);
+  Serial.print(F(" || "));
+  Serial.println(datos.ch6);
 }
