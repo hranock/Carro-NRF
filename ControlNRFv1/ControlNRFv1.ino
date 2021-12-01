@@ -54,10 +54,10 @@ void setup(){
 }
 
 void loop(){
-  datos.ch1=map(analogRead(BTNIX), 0, 1023, 0, 254);
-  datos.ch2=map(analogRead(BTNIY), 0, 1023, 0, 254);
-  datos.ch3=map(analogRead(BTNDX), 0, 1023, 0, 254);
-  datos.ch4=map(analogRead(BTNDY), 0, 1023, 0, 254);
+  datos.ch1=map(analogRead(BTNIX), 0, 1023, 0, 255);
+  datos.ch2=map(analogRead(BTNIY), 0, 1023, 0, 255);
+  datos.ch3=map(analogRead(BTNDX), 0, 1023, 0, 255);
+  datos.ch4=map(analogRead(BTNDY), 0, 1023, 0, 255);
   datos.ch5=digitalRead(TRGI);
   datos.ch6=digitalRead(TRGD);
 
