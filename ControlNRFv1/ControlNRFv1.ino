@@ -31,36 +31,35 @@ bool BJDer;
 */
 
 struct datosEnviados {
-  byte ch1; //XIzq
-  byte ch2; //YIzq
-  byte ch3; //XDer
-  byte ch4; //YDer
-  byte ch5; //BIzq
-  byte ch6; //BDer
+  byte ch1; //Y Izq
+  byte ch2; //Y Der
+  byte ch3; //Trig Izq
+  byte ch4; //Trig Der
+  //byte ch5; //X Izq
+  //byte ch6; //X Der
 };
 
 datosEnviados datos;
 
 void setup(){
   Serial.begin(115200);
-  pinMode(BTND, INPUT);
-  pinMode(BTNI, INPUT);
   pinMode(TRGD, INPUT);
   pinMode(TRGI, INPUT);
   pinMode(LED, OUTPUT);
+  //pinMode(BTND, INPUT);
+  //pinMode(BTNI, INPUT);
 
   digitalWrite(LED, 1);
   iniciarNRF();
 }
 
 void loop(){
-  datos.ch1=map(analogRead(BTNIX), 0, 1023, 0, 255);
-  datos.ch2=map(analogRead(BTNIY), 0, 1023, 0, 255);
-  datos.ch3=map(analogRead(BTNDX), 0, 1023, 0, 255);
-  datos.ch4=map(analogRead(BTNDY), 0, 1023, 0, 255);
-  datos.ch5=digitalRead(TRGI);
-  datos.ch6=digitalRead(TRGD);
-
+  datos.ch1=map(analogRead(BTNIY), 0, 1023, 0, 255);
+  datos.ch2=map(analogRead(BTNDY), 0, 1023, 0, 255);
+  datos.ch3=digitalRead(TRGI);
+  datos.ch4=digitalRead(TRGD);
+  //datos.ch5=map(analogRead(BTNIX), 0, 1023, 0, 255);
+  //datos.ch6=map(analogRead(BTNDX), 0, 1023, 0, 255);
   //verDatosRaw();
 
   if(radio.write(&datos, sizeof(datosEnviados))){
@@ -83,10 +82,10 @@ void iniciarNRF(){
 void reiniciarDatos(){
   datos.ch1=127;
   datos.ch2=127;
-  datos.ch3=127;
-  datos.ch4=127;
-  datos.ch5=1;
-  datos.ch6=1;
+  datos.ch3=1;
+  datos.ch4=1;
+  //datos.ch5=127;
+  //datos.ch6=127;
 }
 
 void verDatosRaw(){
@@ -96,9 +95,5 @@ void verDatosRaw(){
   Serial.print(F(" || "));
   Serial.print(datos.ch3);
   Serial.print(F(" || "));
-  Serial.print(datos.ch4);
-  Serial.print(F(" || "));
-  Serial.print(datos.ch5);
-  Serial.print(F(" || "));
-  Serial.println(datos.ch6);
+  Serial.println(datos.ch4);
 }

@@ -24,15 +24,15 @@ RF24 radio(CE, CSN);
 const uint64_t addr = 0x617265F161LL;
 
 struct datosEnviados {
-  byte ch1; //XIzq
-  byte ch2; //YIzq
-  byte ch3; //XDer
-  byte ch4; //YDer
-  byte ch5; //BIzq
-  byte ch6; //BDer
+  byte ch1; //Y Izq
+  byte ch2; //Y Der
+  byte ch3; //Trig Izq
+  byte ch4; //Trig Der
+  //byte ch5; //X Izq
+  //byte ch6; //X Der
 };
 
-int nDato[6];
+int nDato[4];
 
 datosEnviados datos;
 
@@ -53,17 +53,16 @@ void setup(){
   
   digitalWrite(LED, 1);
   iniciarNRF();
-
-  digitalWrite(STB1, 1);
-  digitalWrite(STB2, 1);
 }
 
 void loop(){
   if(radio.available()){
     radio.read(&datos, sizeof(datosEnviados));
-    ajustarDatos();
+    ajustarDatos(150);
     verDatos();
-    setMotores(nDato[1], nDato[1], nDato[3]);
+    setMotores(nDato[1], nDato[1], nDato[0]);
+    digitalWrite(STB1, nDato[2]);
+    digitalWrite(STB2, nDato[3]);
     digitalWrite(LED, 0);
     delay(50);
   }else{
@@ -104,19 +103,21 @@ void puenteH(int val, byte pwm, byte in1, byte in2){
 void reiniciarDatos(){
   datos.ch1=127;
   datos.ch2=127;
-  datos.ch3=127;
-  datos.ch4=127;
-  datos.ch5=1;
-  datos.ch6=1;
+  datos.ch3=1;
+  datos.ch4=1;
+  //datos.ch5=127;
+  //datos.ch6=127;
 }
 
-void ajustarDatos(){
-  nDato[0]=map(datos.ch1, 0, 255, 255, -255);
-  nDato[1]=map(datos.ch2, 0, 255, -255, 255);
-  nDato[2]=map(datos.ch3, 0, 255, -255, 255);
-  nDato[3]=map(datos.ch4, 0, 255, 255, -255);
-  nDato[4]=datos.ch5;
-  nDato[5]=datos.ch6;
+void ajustarDatos(byte a){
+  nDato[0]=map(datos.ch1, 0, 255, a, -a);
+  nDato[1]=map(datos.ch2, 0, 255, -a, a);
+  nDato[2]=datos.ch3;
+  nDato[3]=datos.ch4;
+  //nDato[4]=map(datos.ch5, 0, 255, -a, a);
+  //nDato[5]=map(datos.ch6, 0, 255, a, -a);
+  if(nDato[0]<30 && nDato[0]>-30) nDato[0]=0;
+  if(nDato[1]<30 && nDato[1]>-30) nDato[1]=0;
 }
 
 void verDatosRaw(){
@@ -126,11 +127,13 @@ void verDatosRaw(){
   Serial.print(F(" || "));
   Serial.print(datos.ch3);
   Serial.print(F(" || "));
-  Serial.print(datos.ch4);
+  Serial.println(datos.ch4);
+  /*
   Serial.print(F(" || "));
   Serial.print(datos.ch5);
   Serial.print(F(" || "));
   Serial.println(datos.ch6);
+  */
 }
 
 void verDatos(){
@@ -140,9 +143,11 @@ void verDatos(){
   Serial.print(F(" || "));
   Serial.print(nDato[2]);
   Serial.print(F(" || "));
-  Serial.print(nDato[3]);
+  Serial.println(nDato[3]);
+  /*
   Serial.print(F(" || "));
   Serial.print(nDato[4]);
   Serial.print(F(" || "));
   Serial.println(nDato[5]);
+  */
 }
