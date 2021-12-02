@@ -14,6 +14,8 @@
 #define CIN2    8
 #define LED     16
 #define SRV     17
+#define STB1    18
+#define STB2    19
 #define CE      9
 #define CSN     10
 
@@ -37,8 +39,8 @@ datosEnviados datos;
 void setup(){
   Serial.begin(115200);
   pinMode(APWM, OUTPUT);
-  pinMode(14, OUTPUT);
-  pinMode(15, OUTPUT);
+  pinMode(AIN1, OUTPUT);
+  pinMode(AIN2, OUTPUT);
   pinMode(BPWM, OUTPUT);
   pinMode(BIN2, OUTPUT);
   pinMode(BIN1, OUTPUT);
@@ -46,9 +48,14 @@ void setup(){
   pinMode(CIN1, OUTPUT);
   pinMode(CIN2, OUTPUT);
   pinMode(LED, OUTPUT);
-
+  pinMode(STB1, OUTPUT);
+  pinMode(STB2, OUTPUT);
+  
   digitalWrite(LED, 1);
   iniciarNRF();
+
+  digitalWrite(STB1, 1);
+  digitalWrite(STB2, 1);
 }
 
 void loop(){
